@@ -1,5 +1,4 @@
 package echoserver;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -7,9 +6,6 @@ import java.net.Socket;
 
 public class EchoClient {
 	public static final int PORT_NUMBER = 6013;
-	private int count = 0;
-	private AtomicInteger atomicCount = new AtomicInteger(0);
-
 	public static void main(String[] args) throws IOException {
 		EchoClient client = new EchoClient();
 		client.start();
@@ -33,36 +29,49 @@ public class EchoClient {
 		socket.close();
 	}
 	
-	public class InputReader implements Runnable{ //inputReader class
+	// public class InputReader implements Runnable{ //inputReader class
 		
-		private int inputStuff;
-		private char c;
-		public InputReader(OutputStream output) throws IOException{ //the input from keyboard will go to the output stream
-			while ((inputStuff = System.in.read()) != -1){
-				c = (char)inputStuff;
-				output.write(c);
-				output.flush();
-			}
-		}
+	// 	private OutputStream output;
+	// 	private int inputStuff;
+	// 	private char c;
+		
+	// 	public InputReader(OutputStream output){
+	// 		this.output = output;
+	// 	}
 
-		@Override
-		public void run(){
-			//stuff
-		}
-	}
+	// 	@Override
+	// 	public void run(){
+	// 		try {
+	// 			while ((inputStuff = System.in.read()) != -1) {
+	// 				c = (char) inputStuff;
+	// 				output.write(c);
+	// 				output.flush();
+	// 			}
+	// 		} catch (IOException e) {
+	// 			// TODO Auto-generated catch block
+	// 			e.printStackTrace();
+	// 		}
+	// 	}
+	// }
 
-	public class OutputWriter implements Runnable{
-		public int outputStuff;
-		public OutputWriter(InputStream input) throws IOException {
-			while ((outputStuff = System.in.read()) != -1){
-				System.out.write(input.read());
-				System.out.flush();
-			}
-		}
+	// public class OutputWriter implements Runnable{
+	// 	private InputStream input;
+	// 	public int outputStuff;
+	// 	public OutputWriter(InputStream input) throws IOException {
+	// 		this.input = input;
+	// 	}
 
-		@Override 
-		public void run(){
-			//even more stuff
-		}
-	}
+	// 	@Override 
+	// 	public void run(){
+	// 		try {
+	// 			while ((outputStuff = System.in.read()) != -1) {
+	// 				System.out.write(input.read());
+	// 				System.out.flush();
+	// 			}
+	// 		} catch (IOException e) {
+	// 			// TODO Auto-generated catch block
+	// 			e.printStackTrace();
+	// 		}
+	// 	}
+	// }
 }
