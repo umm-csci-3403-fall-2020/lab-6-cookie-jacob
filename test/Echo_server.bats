@@ -30,6 +30,7 @@ teardown() {
   rm -f echoserver/*.class
   javac echoserver/EchoServer.java
   java echoserver.EchoServer &
+  sleep 1
   cd ..
 
   cd test/sampleBin
@@ -45,6 +46,7 @@ teardown() {
   rm -f echoserver/*.class
   javac echoserver/EchoServer.java
   java echoserver.EchoServer &
+  sleep 1
   cd ..
 
   cd test/sampleBin
@@ -60,6 +62,7 @@ teardown() {
   rm -f echoserver/*.class
   javac echoserver/EchoServer.java
   java echoserver.EchoServer &
+  sleep 1
   cd ..
 
   cd test/sampleBin
