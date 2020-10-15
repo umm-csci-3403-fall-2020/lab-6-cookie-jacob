@@ -5,7 +5,6 @@ import java.io.IOException;
 public class InputReader implements Runnable {
     private OutputStream output;
 	private int inputStuff;
-	private char c;
 		
 	public InputReader(OutputStream output){
 		this.output = output;
@@ -15,8 +14,7 @@ public class InputReader implements Runnable {
 	public void run(){
 		try {
 			while ((inputStuff = System.in.read()) != -1) {
-				c = (char) inputStuff;
-				output.write(c);
+				output.write(inputStuff);
 				output.flush();
 			}
 		} catch (IOException e) {

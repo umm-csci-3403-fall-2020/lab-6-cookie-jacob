@@ -16,7 +16,7 @@ public class EchoClient {
 		InputStream input = socket.getInputStream(); //input stream receiving stuff from server
 		OutputStream output = socket.getOutputStream(); //output stream sending stuff to server
 
-		OutputWriter toServer = new OutputWriter(input); //
+		OutputWriter toServer = new OutputWriter(input); //referencing the 
 		Thread outputThread = new Thread(toServer);
 		outputThread.start();
 		
@@ -24,54 +24,10 @@ public class EchoClient {
 		Thread inputThread = new Thread(result);
 		inputThread.start();
 
-		input.close();
-		output.close();
-		socket.close();
+		int userInput;
+
+		if ((userInput = System.in.read()) == -1){
+			socket.close();
+		}
 	}
-	
-	// public class InputReader implements Runnable{ //inputReader class
-		
-	// 	private OutputStream output;
-	// 	private int inputStuff;
-	// 	private char c;
-		
-	// 	public InputReader(OutputStream output){
-	// 		this.output = output;
-	// 	}
-
-	// 	@Override
-	// 	public void run(){
-	// 		try {
-	// 			while ((inputStuff = System.in.read()) != -1) {
-	// 				c = (char) inputStuff;
-	// 				output.write(c);
-	// 				output.flush();
-	// 			}
-	// 		} catch (IOException e) {
-	// 			// TODO Auto-generated catch block
-	// 			e.printStackTrace();
-	// 		}
-	// 	}
-	// }
-
-	// public class OutputWriter implements Runnable{
-	// 	private InputStream input;
-	// 	public int outputStuff;
-	// 	public OutputWriter(InputStream input) throws IOException {
-	// 		this.input = input;
-	// 	}
-
-	// 	@Override 
-	// 	public void run(){
-	// 		try {
-	// 			while ((outputStuff = System.in.read()) != -1) {
-	// 				System.out.write(input.read());
-	// 				System.out.flush();
-	// 			}
-	// 		} catch (IOException e) {
-	// 			// TODO Auto-generated catch block
-	// 			e.printStackTrace();
-	// 		}
-	// 	}
-	// }
 }
