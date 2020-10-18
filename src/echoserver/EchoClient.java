@@ -1,4 +1,4 @@
-package echoserver;
+package echoserver; //used to reference other classes in the echoserver directory
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,21 +13,61 @@ public class EchoClient {
 
 	private void start() throws IOException {
 		Socket socket = new Socket("localhost", PORT_NUMBER);
-		InputStream input = socket.getInputStream(); //input stream receiving stuff from server
-		OutputStream output = socket.getOutputStream(); //output stream sending stuff to server
+		InputStream input = socket.getInputStream(); 
+		OutputStream output = socket.getOutputStream(); 
 
-		OutputWriter toServer = new OutputWriter(input); //referencing the 
+		WriteToServer toServer = new WriteToServer(output); //going to the server
 		Thread outputThread = new Thread(toServer);
 		outputThread.start();
 		
-		InputReader result = new InputReader(output);
-		Thread inputThread = new Thread(result);
+		ReadFromServer response = new ReadFromServer(input, socket); //response from server
+		Thread inputThread = new Thread(response);
 		inputThread.start();
+	}
+	
+	public class ReadFromServer implements Runnable {
+		private InputStream input;
+		public int receive;
+		public Socket sock;
+		public ReadFromServer(InputStream input, Socket sock){
+			this.input = input;
+			this.sock = sock;
+		}
 
-		int userInput;
+		@Override
+		public void run(){
+			try {
+				while ((receive = System.in.read()) != -1){
+					System.out.write(receive);
+					System.out.flush();
+				}
+				sock.shutdownOutput();
+			}
+			catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
 
-		if ((userInput = System.in.read()) == -1){
-			socket.close();
+	public class WriteToServer implements Runnable {
+		private OutputStream output;
+		public int send;
+		public WriteToServer(OutputStream output) throws IOException {
+			this.output = output;
+		}
+
+		@Override
+		public void run(){
+			try {
+				while ((send = System.in.read()) != -1){
+					//System.out.write(input.read());
+					output.write(send);
+					output.flush();
+				}
+			}
+			catch (IOException e){
+				e.printStackTrace();
+			}
 		}
 	}
 }
