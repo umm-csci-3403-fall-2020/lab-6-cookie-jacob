@@ -1,4 +1,4 @@
-package echoserver; //used to reference other classes in the echoserver directory
+package echoserver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,9 +26,9 @@ public class EchoClient {
 	}
 	
 	public class ReadFromServer implements Runnable {
-		private InputStream input;
-		public int receive;
-		public Socket sock;
+		InputStream input;
+		int receive;
+		Socket sock;
 		public ReadFromServer(InputStream input, Socket sock){
 			this.input = input;
 			this.sock = sock;
@@ -38,10 +38,10 @@ public class EchoClient {
 		public void run(){
 			try {
 				while ((receive = System.in.read()) != -1){
-					System.out.write(receive);
+					System.out.write(input.read());
 					System.out.flush();
 				}
-				sock.shutdownOutput();
+				sock.shutdownInput();
 			}
 			catch (IOException e){
 				e.printStackTrace();
@@ -50,9 +50,9 @@ public class EchoClient {
 	}
 
 	public class WriteToServer implements Runnable {
-		private OutputStream output;
-		public int send;
-		public WriteToServer(OutputStream output) throws IOException {
+		OutputStream output;
+		int send;
+		WriteToServer(OutputStream output) throws IOException {
 			this.output = output;
 		}
 

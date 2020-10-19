@@ -18,6 +18,12 @@ public class EchoServer {
 		ServerSocket serverSocket = new ServerSocket(PORT_NUMBER);
 		while (true) {
 			Socket socket = serverSocket.accept();
+			InputStream input = socket.getInputStream();
+			OutputStream output = socket.getOutputStream();
+
+			Clients cli = new Clients(input, output);
+			Thread anotherOne = new Thread(cli);
+			anotherOne.start(); 
 
 			// Put your code here.
 			// This should do very little, essentially:
@@ -25,6 +31,30 @@ public class EchoServer {
 			//   * Construct a Thread with your runnable
 			//      * Or use a thread pool
 			//   * Start that thread
+		}
+	}
+
+	public class Clients implements Runnable{
+		OutputStream output;
+		InputStream input;
+		int delivery;
+
+		public Clients(InputStream input, OutputStream output){
+			this.input = input;
+			this.output = output;
+		}
+
+		@Override
+		public void run(){
+			try{
+				while ((delivery = input.read())!=-1){
+					output.write(delivery);
+					output.flush();
+				}
+			}
+			catch (IOException e){
+				e.printStackTrace();
+			}
 		}
 	}
 }
