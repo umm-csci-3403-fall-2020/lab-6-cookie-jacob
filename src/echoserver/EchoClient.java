@@ -16,7 +16,7 @@ public class EchoClient {
 		InputStream input = socket.getInputStream(); 
 		OutputStream output = socket.getOutputStream(); 
 
-		WriteToServer toServer = new WriteToServer(output); //going to the server
+		WriteToServer toServer = new WriteToServer(output, socket); //going to the server
 		Thread outputThread = new Thread(toServer);
 		outputThread.start();
 		
@@ -27,46 +27,52 @@ public class EchoClient {
 	
 	public class ReadFromServer implements Runnable {
 		InputStream input;
-		int receive;
+		//int receive;
 		Socket sock;
 		public ReadFromServer(InputStream input, Socket sock){
 			this.input = input;
 			this.sock = sock;
 		}
 
-		@Override
+			
 		public void run(){
+			int receive;
 			try {
-				while ((receive = System.in.read()) != -1){
-					System.out.write(input.read());
-					System.out.flush();
+				while ((receive = input.read()) != -1){
+					System.out.write(receive);
+					//System.out.flush();
 				}
+				System.out.flush();
 				sock.shutdownInput();
 			}
-			catch (IOException e){
-				e.printStackTrace();
+			catch (IOException ioe){
+				System.out.println("We caught an unexpected exception");
 			}
 		}
 	}
 
 	public class WriteToServer implements Runnable {
 		OutputStream output;
-		int send;
-		WriteToServer(OutputStream output) throws IOException {
+		//int send;
+		Socket sock;
+		public WriteToServer(OutputStream output, Socket sock) throws IOException {
 			this.output = output;
+			this.sock = sock;
 		}
 
-		@Override
+		
 		public void run(){
+			int send;
 			try {
 				while ((send = System.in.read()) != -1){
-					//System.out.write(input.read());
 					output.write(send);
-					output.flush();
+					//output.flush();
 				}
+				//output.flush();
+				sock.shutdownOutput();
 			}
-			catch (IOException e){
-				e.printStackTrace();
+			catch (IOException ioe){
+				System.out.println("We caught an unexpected exception");
 			}
 		}
 	}
