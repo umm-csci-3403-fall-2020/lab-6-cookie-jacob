@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 public class EchoServer {
 	
@@ -21,14 +24,13 @@ public class EchoServer {
 
 			Client cli = new Client(socket);
 			Thread anotherOne = new Thread(cli);
-			anotherOne.start(); 
+			anotherOne.start();
 
-			// Put your code here.
-			// This should do very little, essentially:
-			//   * Construct an instance of your runnable class
-			//   * Construct a Thread with your runnable
-			//      * Or use a thread pool
-			//   * Start that thread
+			ExecutorService pool = Executors.newCachedThreadPool();
+			pool.execute(cli);
+
+
+			pool.shutdown();
 		}
 	}
 
