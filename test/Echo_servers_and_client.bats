@@ -3,9 +3,10 @@
 setup() {
   BATS_TMPDIR=`mktemp --directory`
   cd src
-  rm -f echoserver/EchoServer.class
+  rm -f echoserver/*.class
   javac echoserver/*.java
   java echoserver.EchoServer &
+  sleep 1
   cd ..
 }
 
