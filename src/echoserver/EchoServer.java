@@ -18,10 +18,8 @@ public class EchoServer {
 		ServerSocket serverSocket = new ServerSocket(PORT_NUMBER);
 		while (true) {
 			Socket socket = serverSocket.accept();
-			InputStream input = socket.getInputStream();
-			OutputStream output = socket.getOutputStream();
 
-			Clients cli = new Clients(input, output);
+			Client cli = new Client(socket);
 			Thread anotherOne = new Thread(cli);
 			anotherOne.start(); 
 
@@ -34,26 +32,30 @@ public class EchoServer {
 		}
 	}
 
-	public class Clients implements Runnable{
+	public class Client implements Runnable{
 		OutputStream output;
 		InputStream input;
-		int delivery;
+		Socket sock; //Need to send the client the socket
 
-		public Clients(InputStream input, OutputStream output){
-			this.input = input;
-			this.output = output;
+		public Client(Socket sock) throws IOException{
+			this.input = sock.getInputStream();
+			this.output = sock.getOutputStream();
+			this.sock = sock;
 		}
 
 		@Override
 		public void run(){
+			int delivery;
 			try{
 				while ((delivery = input.read())!=-1){
 					output.write(delivery);
 					output.flush();
 				}
+				sock.shutdownOutput();
 			}
-			catch (IOException e){
-				e.printStackTrace();
+			catch (IOException ioe){
+				System.out.println("We caught an exception on the server.");
+				System.out.println(ioe);
 			}
 		}
 	}

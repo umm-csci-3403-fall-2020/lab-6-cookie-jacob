@@ -13,64 +13,64 @@ public class EchoClient {
 
 	private void start() throws IOException {
 		Socket socket = new Socket("localhost", PORT_NUMBER);
-		InputStream input = socket.getInputStream(); 
-		OutputStream output = socket.getOutputStream(); 
 
-		WriteToServer toServer = new WriteToServer(output, socket); //going to the server
+		WriteToServer toServer = new WriteToServer(socket); //going to the server
 		Thread outputThread = new Thread(toServer); //first thread
 		outputThread.start();
 		
-		ReadFromServer response = new ReadFromServer(input, socket); //response from server
+		ReadFromServer response = new ReadFromServer(socket); //response from server
 		Thread inputThread = new Thread(response); //second thread
 		inputThread.start();
 	}
 	
 	public class ReadFromServer implements Runnable {
 		InputStream input;
-		int receive;
 		Socket sock;
 
-		public ReadFromServer(InputStream input, Socket sock){
-			this.input = input;
+		public ReadFromServer(Socket sock) throws IOException{
+			this.input = sock.getInputStream();
 			this.sock = sock;
 		}
 
 		@Override
 		public void run(){
+			int receive;
 			try {
 				while ((receive = input.read()) != -1){ //As long as there is still data in the InputStream
 					System.out.write(receive);
 					System.out.flush();
 				}
-				sock.shutdownInput(); //close connection when finished
+				sock.close(); //close connection when finished
 			}
 			catch (IOException ioe){
-				System.out.println("We caught an unexpected exception");
+				System.out.println("We caught an unexpected exception on the client.");
+				System.out.println(ioe);
 			}
 		}
 	}
 
 	public class WriteToServer implements Runnable {
 		OutputStream output;
-		int send;
 		Socket sock;
 
-		public WriteToServer(OutputStream output, Socket sock) throws IOException {
-			this.output = output;
+		public WriteToServer(Socket sock) throws IOException {
+			this.output = sock.getOutputStream();
 			this.sock = sock;
 		}
 
 		@Override
 		public void run(){
+			int send;
 			try {
 				while ((send = System.in.read()) != -1){ //As long as the user is still inputting data
 					output.write(send);
 					output.flush();
 				}
-				sock.shutdownOutput(); //close connection when finished
+				sock.shutdownOutput(); //stops further input, but doesn't close connection
 			}
 			catch (IOException ioe){
-				System.out.println("We caught an unexpected exception");
+				System.out.println("We caught an unexpected exception on the client.");
+				System.out.println(ioe);
 			}
 		}
 	}
