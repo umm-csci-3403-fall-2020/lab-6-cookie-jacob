@@ -1,5 +1,4 @@
 package echoserver;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -7,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class EchoServer {
@@ -18,21 +18,20 @@ public class EchoServer {
 	}
 
 	private void start() throws IOException, InterruptedException {
-		ServerSocket serverSocket = new ServerSocket(PORT_NUMBER);
-		while (true) {
-			Socket socket = serverSocket.accept();
-
-			Client cli = new Client(socket);
-			Thread anotherOne = new Thread(cli);
-			anotherOne.start();
-
-			ExecutorService pool = Executors.newCachedThreadPool();
-			pool.execute(cli);
-
-
-			pool.shutdown();
+		try (ServerSocket serverSocket = new ServerSocket(PORT_NUMBER)){
+			while(true){
+				Socket socket = serverSocket.accept();
+				Runnable client = new Client(socket);
+				Thread anotherOne = new Thread(client);
+				anotherOne.start();
+			}
+		}
+		catch (IOException ioe) {
+			System.out.println("We caught an unexpected exception on the client");
+			System.out.println(ioe);
 		}
 	}
+
 
 	public class Client implements Runnable{
 		OutputStream output;
