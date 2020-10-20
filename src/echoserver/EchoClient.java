@@ -17,33 +17,32 @@ public class EchoClient {
 		OutputStream output = socket.getOutputStream(); 
 
 		WriteToServer toServer = new WriteToServer(output, socket); //going to the server
-		Thread outputThread = new Thread(toServer);
+		Thread outputThread = new Thread(toServer); //first thread
 		outputThread.start();
 		
 		ReadFromServer response = new ReadFromServer(input, socket); //response from server
-		Thread inputThread = new Thread(response);
+		Thread inputThread = new Thread(response); //second thread
 		inputThread.start();
 	}
 	
 	public class ReadFromServer implements Runnable {
 		InputStream input;
-		//int receive;
+		int receive;
 		Socket sock;
+
 		public ReadFromServer(InputStream input, Socket sock){
 			this.input = input;
 			this.sock = sock;
 		}
 
-			
+		@Override
 		public void run(){
-			int receive;
 			try {
-				while ((receive = input.read()) != -1){
+				while ((receive = input.read()) != -1){ //As long as there is still data in the InputStream
 					System.out.write(receive);
-					//System.out.flush();
+					System.out.flush();
 				}
-				System.out.flush();
-				sock.shutdownInput();
+				sock.shutdownInput(); //close connection when finished
 			}
 			catch (IOException ioe){
 				System.out.println("We caught an unexpected exception");
@@ -53,23 +52,22 @@ public class EchoClient {
 
 	public class WriteToServer implements Runnable {
 		OutputStream output;
-		//int send;
+		int send;
 		Socket sock;
+
 		public WriteToServer(OutputStream output, Socket sock) throws IOException {
 			this.output = output;
 			this.sock = sock;
 		}
 
-		
+		@Override
 		public void run(){
-			int send;
 			try {
-				while ((send = System.in.read()) != -1){
+				while ((send = System.in.read()) != -1){ //As long as the user is still inputting data
 					output.write(send);
-					//output.flush();
+					output.flush();
 				}
-				//output.flush();
-				sock.shutdownOutput();
+				sock.shutdownOutput(); //close connection when finished
 			}
 			catch (IOException ioe){
 				System.out.println("We caught an unexpected exception");
