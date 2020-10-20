@@ -19,6 +19,7 @@ teardown() {
 @test "Your server starts successfully" {
   cd src
   java echoserver.EchoServer &
+  sleep 1
   status=$?
   kill %1
   cd ..
